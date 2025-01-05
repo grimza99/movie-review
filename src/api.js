@@ -7,6 +7,10 @@ export default async function getReviews({
   const response = await fetch(
     `https://learn.codeit.kr/0909/film-reviews/${query}`
   );
+  if (!response.ok) {
+    throw new Error("에러메시지");
+  }
+
   const body = await response.json();
   return body;
 }
