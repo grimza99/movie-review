@@ -17,7 +17,8 @@ export async function getReviews({
 
 export async function createReview(formData) {
   const response = await fetch(
-    { BASE_URL },
+    `
+    ${BASE_URL}`,
     {
       method: "POST",
       body: formData,
@@ -25,6 +26,19 @@ export async function createReview(formData) {
   );
   if (!response.ok) {
     throw new Error("리뷰생성 실패 ");
+  }
+
+  const body = await response.json();
+  return body;
+}
+
+export async function updateReview(id, formData) {
+  const response = await fetch(`${BASE_URL}/${id}`, {
+    method: "PUT",
+    body: formData,
+  });
+  if (!response.ok) {
+    throw new Error("리뷰수정 실패 ");
   }
 
   const body = await response.json();
