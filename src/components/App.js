@@ -1,6 +1,7 @@
 import ReviewList from "./ReviewList";
 import { useEffect, useState } from "react";
 import getReviews from "../api";
+import ReviewForm from "./ReviewForm";
 
 const LIMIT = 6;
 function App() {
@@ -32,10 +33,10 @@ function App() {
       setIsLoading(true);
       setLoadingError(null);
       result = await getReviews(options);
-    } catch (e) {
+    } catch (error) {
       setLoadingError(error);
     } finally {
-      isLoading(false);
+      setIsLoading(false);
     }
     const { paging, reviews } = result;
     if (options.offset === 0) {
@@ -56,6 +57,7 @@ function App() {
         <button onClick={handleNewestClick}>최신순</button>
         <button onClick={handleBestClick}>베스트순</button>
       </div>
+      <ReviewForm />
       <ReviewList items={sortedItems} onDelete={handleDelete} />
       {hasNext && (
         <button disabled={isLoading} onClick={handleLoadMore}>
