@@ -41,7 +41,7 @@ function ReviewForm() {
         onChange={handleInputChange}
       />
       <textarea
-        name="content  "
+        name="content"
         value={values.content}
         onChange={handleInputChange}
       />
