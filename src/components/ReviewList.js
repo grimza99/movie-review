@@ -1,16 +1,16 @@
 import "../style/ReviewList.css";
 import Rating from "./Rating";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import ReviewForm from "./ReviewForm";
-import LocaleContext from "../contexts/LocaleContext";
-
+import useTranslate from "../hooks/useTranslate";
+//
 function formatDate(value) {
   const date = new Date(value);
   return `${date.getFullYear()}. ${date.getMonth() + 1}. ${date.getDate()}`;
 }
 //
 function ReviewListItem({ item, onDelete, onEdit }) {
-  const locale = useContext(LocaleContext);
+  const t = useTranslate();
   const handelDeleteClick = () => {
     onDelete(item.id);
   };
@@ -29,8 +29,8 @@ function ReviewListItem({ item, onDelete, onEdit }) {
         <Rating value={item.rating} />
         <p>{formatDate(item.createdAt)}</p>
         <p>{item.content}</p>
-        <button onClick={handelDeleteClick}>삭제</button>
-        <button onClick={handleEditClick}>수정</button>
+        <button onClick={handelDeleteClick}>{t("delete button")}</button>
+        <button onClick={handleEditClick}>{t("edit button")}</button>
       </div>
     </div>
   );
