@@ -2,7 +2,7 @@ import { useState } from "react";
 import "../style/ReviewForm.css";
 import FileInput from "./FileInput";
 import RatingInput from "./RatingInput";
-
+import useAsync from "../hooks/useAsync";
 const INITIAL_VALUES = { title: "", rating: 0, content: "", imgFile: null };
 
 function ReviewForm({
@@ -13,8 +13,7 @@ function ReviewForm({
   onSubmit,
 }) {
   const [values, setValues] = useState(initialValues);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submittingError, setSubmittingError] = useState(null);
+  const [isSubmitting, submittingError, onSubmitAsync] = useAsync(onSubmit);
 
   const handleChange = (name, value) => {
     setValues((prevValues) => ({
@@ -27,27 +26,23 @@ function ReviewForm({
     const { name, value } = e.target;
     handleChange(name, value);
   };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("title", values.title);
-    formData.append("rating", values.rating);
-    formData.append("content", values.content);
-    formData.append("imgFile", values.imgFile);
-    let result;
-    try {
-      setIsSubmitting(true);
-      setSubmittingError(null);
-      result = await onSubmit(formData);
-    } catch (error) {
-      setSubmittingError(error);
-    } finally {
-      setIsSubmitting(false);
-    }
-    const { review } = result;
-    onSubmitSuccess(review);
-    setValues(INITIAL_VALUES);
-  };
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append("title", values.title);
+      formData.append("rating", values.rating);
+      formData.append("content", values.content);
+      formData.append("imgFile", values.imgFile);
+      const result = await onSubmitAsync(formData);
+      if (!result) return;
+
+      const { review } = result;
+      onSubmitSuccess(review);
+      setValues(INITIAL_VALUES);
+    },
+    [onSubmitAsync]
+  );
 
   return (
     <form className="ReviewForm" onSubmit={handleSubmit}>
